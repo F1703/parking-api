@@ -1,0 +1,180 @@
+# eliminar todo sin desintalar docker 
+sudo docker system prune -a --volumes --force
+
+# solo para el proyecto
+sudo docker compose down -v
+sudo docker compose down -v --remove-orphans
+
+sudo docker compose up -d --build
+
+# 
+sudo chown -R $USER:$USER src/
+
+docker exec -it laravel_app bash
+composer create-project laravel/laravel . 10.*
+
+composer require tymon/jwt-auth
+php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+php artisan jwt:secret -f 
+
+php artisan migrate --seed
+
+docker exec -it laravel_app php artisan migrate:refresh --force --seed
+
+
+https://github.com/DarkaOnLine/L5-Swagger/wiki/Installation-&-Configuration
+
+composer require "darkaonline/l5-swagger"
+composer remove "darkaonline/l5-swagger"
+php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+
+php artisan l5-swagger:generate
+
+composer require --dev nunomaduro/larastan
+# dentro del contenedor ejecutar:
+./vendor/bin/phpstan analyse app/Http/Controllers/Api/UserController.php 
+./vendor/bin/phpstan analyse app/Http/Controllers/Api/LocationLogController.php 
+./vendor/bin/phpstan analyse app/Http/Controllers/Api/ParkingController.php 
+./vendor/bin/phpstan analyse app/Http/Controllers/Api/RegisterController.php 
+./vendor/bin/phpstan analyse app/Http/Controllers/Api/UserController.php 
+./vendor/bin/phpstan analyse app/Models/LocationLog.php 
+./vendor/bin/phpstan analyse app/Models/Parking.php 
+./vendor/bin/phpstan analyse app/Models/User.php 
+./vendor/bin/phpstan analyse app/Models/
+./vendor/bin/phpstan analyse --memory-limit=512M
+
+
+
+
+# crear un usuario 
+curl -s -X POST http://localhost:8080/api/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"usuario test", "email":"email.02@gmail.com", "password":"email.02@gmail.com"}' | jq 
+
+{
+  "status": true,
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL3JlZ2lzdGVyIiwiaWF0IjoxNzU0MTI3NDkzLCJleHAiOjE3NTQxMzEwOTMsIm5iZiI6MTc1NDEyNzQ5MywianRpIjoiaVhGT2N4UkJjZGpyTXNIZCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.7xCaSeqbxZT7utrTF32GoIjnJ1SE-BlkDzlUzQimxgI"
+}
+
+# login 
+curl -s -X POST http://localhost:8080/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"email.02@gmail.com", "password":"email.02@gmail.com"}' | jq 
+
+# me
+curl -s -X GET http://localhost:8080/api/me \
+  -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwiaWF0IjoxNzU0MTI3NTU2LCJleHAiOjE3NTQxMzExNTYsIm5iZiI6MTc1NDEyNzU1NiwianRpIjoiZXlkbENsc1JrTjFESUJnMiIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.jAxf9yZ-Xy1IOGMZiQx5nXhNdQ2Mn6laC6Dz0r6ZuDA" \
+  -H "Content-Type: application/json" | jq 
+
+{
+  "status": false,
+  "data": [],
+  "message": "Error interno del servidor"
+}
+
+{
+  "status": true,
+  "data": {
+    "id": 1,
+    "name": "usuario test",
+    "email": "email.02@gmail.com", 
+    "created_at": "2025-08-02T09:38:13.000000Z",
+    "updated_at": "2025-08-02T09:38:13.000000Z"
+  }
+}
+
+# listar todos los usuarios 
+curl -s -X GET http://localhost:8080/api/users \
+  -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwiaWF0IjoxNzU0MTA3NDc5LCJleHAiOjE3NTQxMTEwNzksIm5iZiI6MTc1NDEwNzQ3OSwianRpIjoiWGpwQmVPck1qQWR6c0ljbiIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.oBV5a7SgoZFOfXATldLfTanj2a7_G7GRXGAcewKktYQ" \
+  -H "Content-Type: application/json" | jq 
+
+{
+  "status": true,
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "id": 2,
+        "name": "usuario test",
+        "email": "email.02@gmail.com",
+        "email_verified_at": null,
+        "created_at": "2025-08-02T04:03:18.000000Z",
+        "updated_at": "2025-08-02T04:03:18.000000Z"
+      },
+      {
+        "id": 1,
+        "name": "usuario test",
+        "email": "email.01@gmail.com",
+        "email_verified_at": null,
+        "created_at": "2025-08-02T03:55:36.000000Z",
+        "updated_at": "2025-08-02T03:55:36.000000Z"
+      }
+    ],
+    "first_page_url": "http://localhost:8080/api/users?page=1",
+    "from": 1,
+    "next_page_url": null,
+    "path": "http://localhost:8080/api/users",
+    "per_page": 10,
+    "prev_page_url": null,
+    "to": 2
+  }
+}
+
+
+# cerrar session 
+curl -s -X POST http://localhost:8080/api/logout \
+  -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpL2xvZ2luIiwiaWF0IjoxNzU0MTA3NDc5LCJleHAiOjE3NTQxMTEwNzksIm5iZiI6MTc1NDEwNzQ3OSwianRpIjoiWGpwQmVPck1qQWR6c0ljbiIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.oBV5a7SgoZFOfXATldLfTanj2a7_G7GRXGAcewKktYQ" \
+  -H "Content-Type: application/json" | jq 
+
+{
+  "status": false,
+  "data": [],
+  "message": "Método HTTP no permitido para esta ruta."
+}
+
+{
+  "status": true,
+  "message": "Successfully logged out"
+}
+
+
+
+# tener instalado jq 
+curl -s http://localhost:8080/api/parkings  | jq  
+ 
+# guardar un parking 
+curl -s -X POST http://localhost:8080/api/parkings \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Parking Rivadavia", "direccion":"Calle Rivadavia 123", "latitud":-26.8148, "longitud":-65.2163}' | jq 
+
+# guardar un parking 
+curl -s -X POST http://localhost:8080/api/parkings \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Parking Rivadavia", "direccion":"Calle Rivadavia 123", "latitud":-26.74721, "longitud":-65.24686}' | jq 
+
+
+
+# consultar parking por id 
+curl -s "http://localhost:8080/api/parkings/1" | jq  
+
+
+# cerca de monteagudo y santiago
+curl -s "http://localhost:8080/api/buscar-cercano?lat=-26.828182&lon=-65.196425" | jq  
+
+# cerca de rivadavia y cordoba 
+curl -s "http://localhost:8080/api/buscar-cercano?lat=-26.828614&lon=-65.202906" | jq  
+
+
+-26.74721, "longitud":-65.24686
+
+# a 500 mts 
+curl -s "http://localhost:8080/api/buscar-cercano?lat=-26.74721&lon=-65.24686" | jq  
+
+# consultar los mayores a 500 mtrs  
+curl -s "http://localhost:8080/api/logs/distantes" | jq  
+
+
+
+
+
+ 

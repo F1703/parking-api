@@ -1,0 +1,36 @@
+name: Larastan CI
+
+on:
+  push:
+    paths:
+      - 'src/**'
+      - '.github/workflows/larastan.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+
+jobs:
+  larastan:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./src
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: pdo_pgsql
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Run Larastan
+        run: ./vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=512M --no-progress
+        working-directory: ./src
