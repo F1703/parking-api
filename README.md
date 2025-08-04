@@ -69,7 +69,7 @@ sudo docker compose version
 1 )  Clonar el repositorio:
 
 ```bash
-git clone htts://github.com/F1703/parking-api.git
+git clone https://github.com/F1703/parking-api.git
 cd parking-api
 ```
 
