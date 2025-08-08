@@ -2,10 +2,11 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class BuscarParkingRequest extends FormRequest
 {
@@ -48,7 +49,7 @@ class BuscarParkingRequest extends FormRequest
 
 
 
-    public function failedValidation(Validator $validator): JsonResponse
+    public function failedValidation(Validator $validator): void
     {
         $response = response()->json([
             'status' => false,
@@ -56,7 +57,7 @@ class BuscarParkingRequest extends FormRequest
             'errors' => $validator->errors()
         ], 422);
 
-        throw new ValidationException($validator, $response);
+        throw new HttpResponseException($response);
     }
     
 

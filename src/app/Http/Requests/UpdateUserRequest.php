@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -45,7 +46,7 @@ class UpdateUserRequest extends FormRequest
     }
 
 
-    public function failedValidation(Validator $validator): JsonResponse
+    public function failedValidation(Validator $validator): void
     {
         $response = response()->json([
             'status' => false,
@@ -53,7 +54,7 @@ class UpdateUserRequest extends FormRequest
             'errors' => $validator->errors()
         ], 422);
 
-        throw new ValidationException($validator, $response);
+        throw new HttpResponseException($response);
     }
 
 
